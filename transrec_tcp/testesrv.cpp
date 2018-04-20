@@ -5,14 +5,20 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#define _WIN32 0 // 1 ou zero dependendo do SO utilizado
+// nao funcionou, tivemos que comentar a parte do windows
+
+//#ifdef _WIN32
+	//#include <winsock2.h>
+	//#include <WS2tcpip.h>
+//#else
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #define	SOCKET	int
 #define INVALID_SOCKET  ((SOCKET)~0)
-
-
+//#endif
 
 #define MAX_PACKET 1250 //tamanho legal
 #define PORTA_SRV 2023 // porta TCP do servidor !!!!!!!!!!!!!!
@@ -33,7 +39,7 @@ int main(int argc, char* argv[])
   if ((s = socket(AF_INET, SOCK_STREAM, 0))==INVALID_SOCKET)
 	  TrataErro(s, ABRESOCK);
 
-  // Define domínio, IP e porta a receber dados
+  // Define domï¿½nio, IP e porta a receber dados
   addr_serv.sin_family = AF_INET;
   addr_serv.sin_addr.s_addr = htonl(INADDR_ANY); // recebe de qualquer IP
   addr_serv.sin_port = htons(PORTA_SRV);

@@ -5,13 +5,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#define	SOCKET	int
-#define INVALID_SOCKET  ((SOCKET)~0)
-
+#ifdef _WIN32
+	#include <winsock2.h>
+#else
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	#define	SOCKET	int
+	#define INVALID_SOCKET  ((SOCKET)~0)
+#endif
 #include <ctime>
 
 
@@ -23,10 +26,17 @@
 int main(int argc, char* argv[])
 {
   SOCKET s;
-  //printf("%d\n", argc);
-  int PORTA_SRV = argv[1];
+  int PORTA_SRV = atoi(argv[1]);
   struct sockaddr_in  s_cli, s_serv;
-
+  
+#ifdef _WIN32
+	 WSADATA wsaData;
+  
+	if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
+		printf("Erro no startup do socket\n");
+		exit(1);
+	}
+#endif
   // abre socket TCP
   if ((s = socket(AF_INET, SOCK_STREAM, 0))==INVALID_SOCKET)
   {
@@ -65,7 +75,7 @@ int main(int argc, char* argv[])
   // envia mensagem de conexao - aprimorar para dar IP e porta
   if ((send(s, "Conectado\n", 11,0)) == SOCKET_ERROR);
   {*
-    printf("erro na transmissão - %d\n", WSAGetLastError());
+    printf("erro na transmissï¿½o - %d\n", WSAGetLastError());
     closesocket(s);
     return 0;
   }
@@ -88,8 +98,8 @@ int main(int argc, char* argv[])
 
     if ((send(s, (const char *)&str, sizeof(str),0)) < 0)
     {
-      //printf("erro na transmissão - %d\n", WSAGetLastError());
-      printf("erro na transmissão\n");
+      //printf("erro na transmissï¿½o - %d\n", WSAGetLastError());
+      printf("erro na transmissï¿½o\n");
       close(s);
       return 0;
     }
