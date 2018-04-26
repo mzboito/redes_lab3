@@ -81,16 +81,9 @@ int main(int argc, char **argv){
 	 while (1)
 	 {
 		 // Quando recebe um pacote, automaticamente atualiza o IP da estrutura peer
-#ifdef _WIN32
-		 rc = recvfrom(s, buffer, sizeof(buffer), 0, (struct sockaddr *)&peer, &peerlen);
-#else
 		 rc = recvfrom(s,buffer,sizeof(buffer),0,(struct sockaddr *) &peer,(socklen_t *)&peerlen);
-#endif
 		 printf("Recebido %s\n", &buffer);
 
-		 strcpy(buffer,"ACK");
-		 sendto(s,buffer,sizeof(buffer),0,(struct sockaddr *)&peer, peerlen);
-		 printf("Enviado ACK\n\n");
 	 }
 
 }

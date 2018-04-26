@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 								exit(1);
 						  }
 						  break;
-					 case 'b': //Kbps do meio 
+					 case 'b': //Mbps do meio 
 					 	  i++;
 						  kbps = atoi(argv[i]) * 1024; //transforms in Kbps
 						  break;
@@ -80,26 +80,16 @@ int main(int argc, char **argv){
 	 peer.sin_addr.s_addr = inet_addr(ip); 
 	 peerlen = sizeof(peer);
 	
-// Calcula o sleep time
-	sleep_time = (float) 1000000 / kbps;
-	
+// Calcula o sleep time em mili
+	sleep_time = (float) 1.0 / (kbps); 
+	sleep_time = sleep_time * 1000000; //mili
+
 strcpy(buffer,"UM PACOTE");
 
 // Envia pacotes <3
 	while(1)
 	{
-
 		sendto(s, buffer, sizeof(buffer), 0, (struct sockaddr *)&peer, peerlen);
 		usleep(sleep_time);
-
-		/*#ifdef _WIN32
-				rc = recvfrom(s,buffer,sizeof(buffer),0,(struct sockaddr *)&peer, &peerlen); 
-				printf("Recebido %s\n\n",&buffer);
-				Sleep(5000);
-		#else //recebe o ack
-				//rc = recvfrom(s,buffer,sizeof(buffer),0,(struct sockaddr *) &peer,(socklen_t *) &peerlen); 
-				//printf("Recebido %s\n\n",&buffer);
-				
-		#endif*/
 	}
 }
