@@ -5,38 +5,72 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#ifdef _WIN32
+/*#ifdef _WIN32
 	#include <winsock2.h>
-#else
+#else*/
 	#include <sys/types.h>
 	#include <sys/socket.h>
 	#include <netinet/in.h>
 	#include <arpa/inet.h>
 	#define	SOCKET	int
 	#define INVALID_SOCKET  ((SOCKET)~0)
-#endif
+//#endif
 #include <ctime>
 
-
-#define PORTA_CLI 2345 // porta TCP do cliente
-//#define PORTA_SRV 2023 // porta TCP do servidor
-#define STR_IPSERVIDOR "127.0.0.1"
-//#define STR_IPSERVIDOR "192.168.0.146"
 
 int main(int argc, char* argv[])
 {
   SOCKET s;
-  int PORTA_SRV = atoi(argv[1]);
+  char* STR_IPSERVIDOR;
+  int PORTA_SRV, PORTA_CLI; // = atoi(argv[1]);
   struct sockaddr_in  s_cli, s_serv;
   
-#ifdef _WIN32
-	 WSADATA wsaData;
-  
-	if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
-		printf("Erro no startup do socket\n");
-		exit(1);
-	}
-#endif
+  if(argc < 7) {
+		  printf("Utilizar:\n");
+		  printf("trans -h <numero_ip> -s <porta_srv> -c <porta_cli>\n");
+		  exit(1);
+	 }
+
+	 // Pega parametros
+	 for(i=1; i<argc; i++) {
+		  if(argv[i][0]=='-') {
+				switch(argv[i][1]) {
+					 case 'h': // Numero IP
+						  i++;
+						  strcpy(STR_IPSERVIDOR, argv[i]);
+						  break;
+
+					 
+					 case 's': // porta servidor
+						  i++;
+						  PORTA_SRV = atoi(argv[i]);
+						  if(porta < 1024) {
+								printf("Valor da porta invalido\n");
+								exit(1);
+						  }
+						  break;
+					 case 'c': // porta cliente
+					 	  i++;
+						  PORTA_CLI = atoi(argv[i]);
+						  break;
+					 default:
+						  printf("Parametro invalido %d: %s\n",i,argv[i]);
+						  exit(1);
+				}		  	 
+		  } else {
+			  printf("Parametro %d: %s invalido\n",i, argv[i]); 
+				exit(1);
+		  }
+	 }
+
+  /*#ifdef _WIN32
+    WSADATA wsaData;
+    
+    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
+      printf("Erro no startup do socket\n");
+      exit(1);
+    }
+  #endif*/
   // abre socket TCP
   if ((s = socket(AF_INET, SOCK_STREAM, 0))==INVALID_SOCKET)
   {

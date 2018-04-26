@@ -30,9 +30,9 @@ int main(int argc, char **argv){
 	}
 #endif
 
-	 if(argc < 5) {
+	 if(argc < 7) {
 		  printf("Utilizar:\n");
-		  printf("trans -h <numero_ip> -p <porta>\n");
+		  printf("trans -h <numero_ip> -p <porta> -r <kbps>\n");
 		  exit(1);
 	 }
 
