@@ -1,19 +1,7 @@
-/* Copyright (C) 2006 PRAV - Pesquisa em Redes de Alta Velocidade
- *                    NTVD - Núcleo de TV Digital
- * http://www.ufrgs.br/ntvd
- *
- *  O objetivo deste programa é apresentar a base da estrutura de programação com sockets
- *  através de UDP
- *
- * Serv.c: Esqueleto de servidor UDP.
- * Argumentos: -p <porta>
- *
- * Desenvolvido para sistemas UNIX Like (Linux, FreeBSD, NetBSD...) e Windows
- *		Maiko de Andrade
- *		Valter Roesler
-*/
+/*Versao UDP modificada pelas alunas Jessica e Marcely */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef _WIN32
@@ -29,7 +17,7 @@ int main(int argc, char **argv){
 	 struct  sockaddr_in peer;
 	 SOCKET  s;
 	 int porta, peerlen, rc, i;
-	 char buffer[100];
+	 char buffer[1250]; //tamanho sugerido pelo professor
 
 #ifdef _WIN32
 	 WSADATA wsaData;
@@ -74,7 +62,7 @@ int main(int argc, char **argv){
 		  exit(1);
  	 }
 
-// Define domínio, IP e porta a receber dados
+// Define domï¿½nio, IP e porta a receber dados
 	 memset((void *) &peer,0,sizeof(struct sockaddr_in));
 	 peer.sin_family = AF_INET;
 	 peer.sin_addr.s_addr = htonl(INADDR_ANY); // Recebe de qualquer IP

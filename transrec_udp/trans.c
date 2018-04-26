@@ -1,17 +1,4 @@
-/* Copyright (C) 2006 PRAV - Pesquisa em Redes de Alta Velocidade
- *                    NTVD - Núcleo de TV Digital
- * http://www.ufrgs.br/ntvd
- *
- *  O objetivo deste programa é apresentar a base da estrutura de programação com sockets
- *  através de UDP
- *
- * Cli.c: Esqueleto de cliente UDP. 
- * Argumentos: -h <IP destino> -p <porta>
- *
- * Desenvolvido para sistemas UNIX Like (Linux, FreeBSD, NetBSD...) e Windows
- *		Maiko de Andrade
- *		Valter Roesler
-*/
+/*Versao UDP modificada pelas alunas Jessica e Marcely */
 
 #include <stdio.h>
 #include <string.h>
@@ -19,8 +6,8 @@
 #ifdef _WIN32
 	#include <winsock2.h>
 #else
-        #include <stdlib.h>
-        #include <unistd.h>
+	#include <stdlib.h>
+	#include <unistd.h>
 	#include <sys/types.h>
 	#include <sys/socket.h>
 	#include <netinet/in.h>
@@ -31,11 +18,12 @@ int main(int argc, char **argv){
 	 struct sockaddr_in peer;
 	 SOCKET s;
 	 int porta, peerlen, rc, i;
-	 char ip[16], buffer[100];
+	 char ip[16], buffer[1250];
+	 float sleep_time, kbps;
 	 
 #ifdef _WIN32
 	 WSADATA wsaData;
-  
+
 	if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
 		printf("Erro no startup do socket\n");
 		exit(1);
@@ -66,7 +54,10 @@ int main(int argc, char **argv){
 								exit(1);
 						  }
 						  break;
-						  
+					 case 'b': //bps do meio (como fizemos em casa, nÃ£o podemos usar 100Kbps)
+					 	  i++;
+						  kbps = atoi(argv[i]);
+						  break;
 					 default:
 						  printf("Parametro invalido %d: %s\n",i,argv[i]);
 						  exit(1);
@@ -89,20 +80,27 @@ int main(int argc, char **argv){
 	 peer.sin_addr.s_addr = inet_addr(ip); 
 	 peerlen = sizeof(peer);
 	
-// Envia pacotes Hello e aguarda resposta
+// Calcula o sleep time
+	sleep_time = (float)(1.0/(kbps/10.0));
+	sleep_time = sleep_time  *1000000;
+
+strcpy(buffer,"UM PACOTE");
+
+// Envia pacotes <3
 	while(1)
 	{
-		strcpy(buffer,"Hello");
+
 		sendto(s, buffer, sizeof(buffer), 0, (struct sockaddr *)&peer, peerlen);
-		printf("Enviado Hello\n");
-#ifdef _WIN32
-		rc = recvfrom(s,buffer,sizeof(buffer),0,(struct sockaddr *)&peer, &peerlen); 
-		printf("Recebido %s\n\n",&buffer);
-		Sleep(5000);
-#else
-		rc = recvfrom(s,buffer,sizeof(buffer),0,(struct sockaddr *) &peer,(socklen_t *) &peerlen); 
-		printf("Recebido %s\n\n",&buffer);
-		sleep(5);
-#endif
+		usleep(sleep_time);
+
+		/*#ifdef _WIN32
+				rc = recvfrom(s,buffer,sizeof(buffer),0,(struct sockaddr *)&peer, &peerlen); 
+				printf("Recebido %s\n\n",&buffer);
+				Sleep(5000);
+		#else //recebe o ack
+				//rc = recvfrom(s,buffer,sizeof(buffer),0,(struct sockaddr *) &peer,(socklen_t *) &peerlen); 
+				//printf("Recebido %s\n\n",&buffer);
+				
+		#endif*/
 	}
 }
