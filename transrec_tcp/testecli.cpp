@@ -25,12 +25,11 @@ int main(int argc, char* argv[])
   int PORTA_SRV, PORTA_CLI, i; 
   struct sockaddr_in  s_cli, s_serv;
   
-  if(argc < 7) {
+  if(argc < 6) {
 		  printf("Utilizar:\n");
 		  printf("trans -h <numero_ip> -s <porta_srv> -c <porta_cli>\n");
 		  exit(1);
 	 }
-
 	 // Pega parametros
 	 for(i=1; i<argc; i++) {
 		  if(argv[i][0]=='-') {
@@ -38,9 +37,7 @@ int main(int argc, char* argv[])
 					 case 'h': // Numero IP
 						  i++;
 						  strcpy(STR_IPSERVIDOR, argv[i]);
-						  break;
-
-					 
+						  break;		 
 					 case 's': // porta servidor
 						  i++;
 						  PORTA_SRV = atoi(argv[i]);
@@ -126,6 +123,7 @@ int main(int argc, char* argv[])
       iter++;
       printf("%d %d\n", iter, package_count*buffer_size);
       package_count = 0;
+      time(&t_init);
     }
   }
   // fecha socket e termina programa
