@@ -54,9 +54,9 @@ int main(int argc, char **argv){
 								exit(1);
 						  }
 						  break;
-					 case 'b': //bps do meio (como fizemos em casa, não podemos usar 100Kbps)
+					 case 'b': //Kbps do meio 
 					 	  i++;
-						  kbps = atoi(argv[i]);
+						  kbps = atoi(argv[i]) * 1024; //transforms in Kbps
 						  break;
 					 default:
 						  printf("Parametro invalido %d: %s\n",i,argv[i]);
@@ -81,9 +81,8 @@ int main(int argc, char **argv){
 	 peerlen = sizeof(peer);
 	
 // Calcula o sleep time
-	sleep_time = (float)(1.0/(kbps/10.0));
-	sleep_time = sleep_time  *1000000;
-
+	sleep_time = (float) 1000000 / kbps;
+	
 strcpy(buffer,"UM PACOTE");
 
 // Envia pacotes <3
