@@ -93,11 +93,7 @@ int main(int argc, char* argv[])
 	  TrataErro(s, RECEIVE);
     }
 
-    // mostra na tela
-    if(strcmp((const char *)&recvbuf, "q")==0)
-      break;
-    else
-      printf(" - msg recv - %s\n", recvbuf);
+    printf("I received a message! \n");
   }
 
   // fecha socket e termina programa

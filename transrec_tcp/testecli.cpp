@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 
   int buffer_size = 1250; // tamanho pacote
   char str[buffer_size]; // criacao do buffer
-  int package_count; // count para os pacotes
+  int package_count =0; // count para os pacotes
   int iter = 0; // count de iteracao
   time_t t_now, t_init; // variaveis de controle de tempo
   time(&t_init); //init tempo
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
     time(&t_now);
     if(difftime(t_now, t_init) >= 1.0){
       iter++;
-      printf("%d %d\n", iter, package_count*buffer_size);
+      printf("%d\t%d\n", iter, package_count*buffer_size);
       package_count = 0;
       time(&t_init);
     }
