@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 								exit(1);
 						  }
 						  break;
-					 case 'b': //Kbps do meio 
+					 case 'r': //Kbps do meio 
 					 	  i++;
 						  kbps = atoi(argv[i]); 
 						  break;

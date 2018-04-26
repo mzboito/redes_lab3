@@ -83,9 +83,9 @@ int main(int argc, char **argv){
 		 // Quando recebe um pacote, automaticamente atualiza o IP da estrutura peer
 		 rc = recvfrom(s,buffer,sizeof(buffer),0,(struct sockaddr *) &peer,(socklen_t *)&peerlen);
 		 printf("Recebido %s\n", &buffer);
-		 strcpy(buffer,"ACK");
-		 sendto(s,buffer,sizeof(buffer),0,(struct sockaddr *)&peer, peerlen);
-		 printf("Enviado ACK\n\n");
+		 //strcpy(buffer,"ACK");
+		 //sendto(s,buffer,sizeof(buffer),0,(struct sockaddr *)&peer, peerlen);
+		 //printf("Enviado ACK\n\n");
 
 	 }
 
