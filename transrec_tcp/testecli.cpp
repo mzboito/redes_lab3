@@ -21,8 +21,8 @@
 int main(int argc, char* argv[])
 {
   SOCKET s;
-  char* STR_IPSERVIDOR;
-  int PORTA_SRV, PORTA_CLI; // = atoi(argv[1]);
+  char STR_IPSERVIDOR[256];
+  int PORTA_SRV, PORTA_CLI, i; 
   struct sockaddr_in  s_cli, s_serv;
   
   if(argc < 7) {
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 					 case 's': // porta servidor
 						  i++;
 						  PORTA_SRV = atoi(argv[i]);
-						  if(porta < 1024) {
+						  if(PORTA_SRV < 1024) {
 								printf("Valor da porta invalido\n");
 								exit(1);
 						  }
@@ -52,6 +52,10 @@ int main(int argc, char* argv[])
 					 case 'c': // porta cliente
 					 	  i++;
 						  PORTA_CLI = atoi(argv[i]);
+              if(PORTA_CLI < 1024) {
+								printf("Valor da porta invalido\n");
+								exit(1);
+						  }
 						  break;
 					 default:
 						  printf("Parametro invalido %d: %s\n",i,argv[i]);
@@ -99,60 +103,31 @@ int main(int argc, char* argv[])
   // connecta socket aberto no cliente com o servidor
   if(connect(s, (struct sockaddr*)&s_serv, sizeof(s_serv)) != 0)
   {
-    //printf("erro na conexao - %d\n", WSAGetLastError());
     printf("erro na conexao");
     close(s);
     exit(1);
   }
 
-#if 0
-  // envia mensagem de conexao - aprimorar para dar IP e porta
-  if ((send(s, "Conectado\n", 11,0)) == SOCKET_ERROR);
-  {*
-    printf("erro na transmiss�o - %d\n", WSAGetLastError());
-    closesocket(s);
-    return 0;
-  }
-#endif
-
-  // recebe do teclado e envia ao servidor
-  int str_size = 1250;
-  char str[str_size];
-  //char ch;
-  //int i;
-  int m_count;
-  int start_s; // the code you wish to time goes here
-  int stop_s;
-  float time;
-  FILE *pFile;
-
-  start_s=clock();
-  while(1)
-  {
-
-    if ((send(s, (const char *)&str, sizeof(str),0)) < 0)
-    {
-      //printf("erro na transmiss�o - %d\n", WSAGetLastError());
+  int buffer_size = 1250; // tamanho pacote
+  char str[buffer_size]; // criacao do buffer
+  int package_count; // count para os pacotes
+  int iter = 0; // count de iteracao
+  time_t t_now, t_init; // variaveis de controle de tempo
+  time(&t_init); //init tempo
+  while(1) {
+    if ((send(s, (const char *)&str, sizeof(str),0)) < 0) {
       printf("erro na transmiss�o\n");
       close(s);
       return 0;
     }
-    m_count++;
-    stop_s=clock();
-    time = (stop_s-start_s)/double(CLOCKS_PER_SEC);
-    if(time >= 1){
-        if((pFile = fopen(argv[1],"a"))==NULL){
-            perror("Error opening file.");
-            exit(1);
-        }else{
-            fprintf(pFile, "%d\n", m_count*str_size);
-            m_count = 0;
-            start_s=clock();
-        }
+    package_count++;
+    time(&t_now);
+    if(difftime(t_now, t_init) >= 1.0){
+      iter++;
+      printf("%d %d\n", iter, package_count*buffer_size);
+      package_count = 0;
     }
-     //usleep(100000);
   }
-
   // fecha socket e termina programa
   printf("Fim da conexao\n");
   close(s);

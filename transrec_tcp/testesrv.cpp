@@ -21,7 +21,6 @@
 //#endif
 
 #define MAX_PACKET 1250 //tamanho legal
-#define PORTA_SRV 2023 // porta TCP do servidor !!!!!!!!!!!!!!
 
 enum erros {WSTARTUP, ABRESOCK, BIND, ACCEPT, LISTEN,RECEIVE};
 
@@ -32,6 +31,35 @@ int main(int argc, char* argv[])
   SOCKET s=0, s_cli;
   struct sockaddr_in  addr_serv, addr_cli;
   socklen_t addr_cli_len=sizeof(addr_cli);
+  int PORTA_SRV, i;
+
+  if(argc < 3) {
+		  printf("Utilizar:\n");
+		  printf("trans -s <porta_srv>\n");
+		  exit(1);
+	 }
+
+	 // Pega parametros
+	 for(i=1; i<argc; i++) {
+		  if(argv[i][0]=='-') {
+				switch(argv[i][1]) {
+					 case 's': // porta servidor
+						  i++;
+						  PORTA_SRV = atoi(argv[i]);
+						  if(PORTA_SRV < 1024) {
+								printf("Valor da porta invalido\n");
+								exit(1);
+						  }
+						  break;
+					 default:
+						  printf("Parametro invalido %d: %s\n",i,argv[i]);
+						  exit(1);
+				}		  	 
+		  } else {
+			  printf("Parametro %d: %s invalido\n",i, argv[i]); 
+				exit(1);
+		  }
+	 }
 
   char recvbuf[MAX_PACKET];
 
