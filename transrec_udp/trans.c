@@ -81,7 +81,7 @@ int main(int argc, char **argv){
 	 peerlen = sizeof(peer);
 	
 // Calcula o sleep time em mili
-	sleep_time = (float) 1.0 / (kbps); 
+	sleep_time = (float) 1.0 / (kbps); //removed the /10
 	sleep_time = sleep_time * 1000000; //mili
 
 strcpy(buffer,"UM PACOTE");
